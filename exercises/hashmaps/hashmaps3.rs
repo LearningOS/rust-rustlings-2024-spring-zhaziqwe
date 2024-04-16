@@ -7,18 +7,18 @@
 // You have to build a scores table containing the name of the team, goals the
 // team scored, and goals the team conceded. One approach to build the scores
 // table is to use a Hashmap. The solution is partially written to use a
-// Hashmap, complete it to pass the test.
+// Hashmap, complete it to pass the test.s
 //
 // Make me pass the tests!
 //
 // Execute `rustlings hint hashmaps3` or use the `hint` watch subcommand for a
 // hint.
 
-// I AM NOT DONE
 
 use std::collections::HashMap;
 
 // A structure to store the goal details of a team.
+#[derive(Clone)]
 struct Team {
     goals_scored: u8,
     goals_conceded: u8,
@@ -39,6 +39,16 @@ fn build_scores_table(results: String) -> HashMap<String, Team> {
         // will be the number of goals conceded from team_2, and similarly
         // goals scored by team_2 will be the number of goals conceded by
         // team_1.
+        let mut team_1 = Team { goals_scored: team_1_score, goals_conceded: team_2_score };
+        let mut team_2 = Team { goals_scored: team_2_score, goals_conceded: team_1_score };
+        for (team_name, team) in vec![(team_1_name, &mut team_1), (team_2_name, &mut team_2)] {
+            if let Some(t) = scores.get_mut(&team_name) {
+                t.goals_scored += team.goals_scored;
+                t.goals_conceded += team.goals_conceded;
+            } else {
+                scores.insert(team_name, team.clone());
+            }
+        }
     }
     scores
 }
