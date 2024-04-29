@@ -1,11 +1,10 @@
 /*
 	queue
-	This question requires you to use queues to implement the functionality of the stac
+	This question requires you to use queues to implement the functionality of the stack
 */
-// I AM NOT DONE
-
+use std::mem;
 #[derive(Debug)]
-pub struct Queue<T> {
+pub struct Queue<T> {  
     elements: Vec<T>,
 }
 
@@ -68,14 +67,36 @@ impl<T> myStack<T> {
     }
     pub fn push(&mut self, elem: T) {
         //TODO
+        self.q1.enqueue(elem);
     }
     pub fn pop(&mut self) -> Result<T, &str> {
         //TODO
-		Err("Stack is empty")
+		match self.q1.is_empty() {
+			true => Err("Stack is empty"),
+			false => {
+                // 创建一个临时变量存储 q1 的值
+                let mut temp_q1 = mem::replace(&mut self.q1, Queue::new());
+                
+                // 从临时变量中弹出元素，直到剩下最后一个元素
+                while temp_q1.size() > 1 {
+                    self.q2.enqueue(temp_q1.dequeue().unwrap());
+                }
+                
+                // 弹出最后一个元素
+                let result = temp_q1.dequeue().unwrap();
+                
+                // 将 q2 中的元素转移回 q1 中
+                while !self.q2.is_empty() {
+                    self.q1.enqueue(self.q2.dequeue().unwrap());
+                }
+                Ok(result)
+            }
+
+        }
     }
     pub fn is_empty(&self) -> bool {
 		//TODO
-        true
+        self.q1.is_empty()
     }
 }
 

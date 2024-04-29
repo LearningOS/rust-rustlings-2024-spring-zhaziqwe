@@ -14,7 +14,7 @@ struct Person {
 }
 
 // We implement the Default trait to use it as a fallback
-// when the provided string is not convertible into a Person object
+// when the provided string is not convertible into a Person objectc
 impl Default for Person {
     fn default() -> Person {
         Person {
@@ -40,12 +40,34 @@ impl Default for Person {
 // If while parsing the age, something goes wrong, then return the default of
 // Person Otherwise, then return an instantiated Person object with the results
 
-// I AM NOT DONE
 
 impl From<&str> for Person {
     fn from(s: &str) -> Person {
+        if s.is_empty() {
+            return Person::default();
+        }
+
+        let mut parts = s.splitn(2, ','); // 使用splitn来限制分割的次数为2
+        let name = match parts.next() {
+            Some(n) if !n.is_empty() => n.to_string(),
+            _ => return Person::default(),
+        };
+
+        let age_str = match parts.next() {
+            Some(a) => a.trim(), // 去除可能的末尾空格
+            None => return Person::default(),
+        };
+
+
+        let age = match age_str.parse::<usize>() {
+            Ok(a) => a,
+            Err(_) => return Person::default(),
+        };
+
+        Person { name, age }
     }
 }
+
 
 fn main() {
     // Use the `from` function
